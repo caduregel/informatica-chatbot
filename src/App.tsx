@@ -55,18 +55,18 @@ function App() {
   const sendMessage = () => {
     // if bot loading, do nothing
     if (chatbotLoading) return;
-
+    setChatbotLoading(true);
     // alter user messages array
     const userMessagesCopy = [...userMessages];
     userMessagesCopy.push(chatMessageValue);
     setUserMessages(userMessagesCopy);
 
     const chatbotMessagesCopy = [...chatbotMessages];
-    chatbotMessagesCopy.push("Bezig met laden...");
+    chatbotMessagesCopy.push("Fuck jou");
     setChatbotMessages(chatbotMessagesCopy);
 
     setChatMessageValue("");
-    setChatbotLoading(true);
+    setChatbotLoading(false);
   };
 
   return (

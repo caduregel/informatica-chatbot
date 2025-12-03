@@ -1,0 +1,31 @@
+.main {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 90vh;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.message {
+  max-width: 60%;
+  padding: 8px 12px;
+  margin: 6px 0;
+  border-radius: 10px;
+}
+
+.message.left {
+  background: #e3e3e3;
+  align-self: flex-end;
+}
+
+.message.right {
+  background: #cce5ff;
+  align-self: flex-start;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}

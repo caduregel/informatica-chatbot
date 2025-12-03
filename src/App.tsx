@@ -1,0 +1,113 @@
+import { useState } from "react";
+import "./App.css";
+import { Button, Input, Space } from "antd";
+import { SendOutlined } from "@ant-design/icons";
+import lars from "./assets/lars.png";
+
+interface IMessage {
+  sender: "user" | "bot";
+  text: string;
+}
+
+function ChatMessages({
+  userMessages,
+  chatbotMessages,
+}: {
+  userMessages: string[];
+  chatbotMessages: string[];
+}) {
+  const combinedMessages: IMessage[] = [];
+
+  const maxLen = Math.max(userMessages.length, chatbotMessages.length);
+  for (let i = 0; i < maxLen; i++) {
+    if (chatbotMessages[i]) {
+      combinedMessages.push({ sender: "bot", text: chatbotMessages[i] });
+    }
+    if (userMessages[i]) {
+      combinedMessages.push({ sender: "user", text: userMessages[i] });
+    }
+  }
+
+  console.log(combinedMessages);
+  return (
+    <>
+      {combinedMessages.map((msg, index) => (
+        <div
+          key={index}
+          className={`message ${msg.sender === "user" ? "left" : "right"}`}
+        >
+          {msg.text}
+        </div>
+      ))}
+    </>
+  );
+}
+
+function App() {
+  const [chatMessageValue, setChatMessageValue] = useState<string>("");
+  const [chatbotLoading, setChatbotLoading] = useState<boolean>(false);
+  const [userMessages, setUserMessages] = useState<string[]>([]);
+
+  const [chatbotMessages, setChatbotMessages] = useState<string[]>([
+    "Hallo! Ik ben Lars, jouw persoonlijke chatbot. Waar kan ik je mee helpen",
+  ]);
+
+  const sendMessage = () => {
+    // if bot loading, do nothing
+    if (chatbotLoading) return;
+
+    // alter user messages array
+    const userMessagesCopy = [...userMessages];
+    userMessagesCopy.push(chatMessageValue);
+    setUserMessages(userMessagesCopy);
+
+    const chatbotMessagesCopy = [...chatbotMessages];
+    chatbotMessagesCopy.push("Bezig met laden...");
+    setChatbotMessages(chatbotMessagesCopy);
+
+    setChatMessageValue("");
+    setChatbotLoading(true);
+  };
+
+  return (
+    <>
+      <div className="main">
+        <div className="header">
+          <h1>Chatbot Lars</h1>
+          <img src={lars} alt="" width="50px" height="50px" />
+        </div>
+        <Space.Compact
+          style={{
+            height: "100%",
+            maxWidth: "38vw",
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <ChatMessages
+            userMessages={userMessages}
+            chatbotMessages={chatbotMessages}
+          />
+        </Space.Compact>
+        <Space.Compact
+          style={{ maxWidth: "40vw", width: "100%", justifySelf: "end" }}
+        >
+          <Input
+            value={chatMessageValue}
+            onChange={(value) => {
+              setChatMessageValue(value.target.value);
+            }}
+            placeholder="Chat met chatbot Lars!"
+            className="Chatinput"
+          />
+          <Button type="primary" onClick={sendMessage}>
+            <SendOutlined />
+          </Button>
+        </Space.Compact>
+      </div>
+    </>
+  );
+}
+
+export default App;

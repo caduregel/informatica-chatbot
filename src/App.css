@@ -32,4 +32,6 @@
 
 .messages-container {
   padding-bottom: 50px;
+  display: flex;
+  flex-direction: column;
 }

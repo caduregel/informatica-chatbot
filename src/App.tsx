@@ -90,21 +90,35 @@ function App() {
             chatbotMessages={chatbotMessages}
           />
         </Space.Compact>
-        <Space.Compact
-          style={{ maxWidth: "40vw", width: "100%", justifySelf: "end" }}
+        <div
+          style={{
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            display: "flex",
+            justifyContent: "center",
+            padding: "12px 0",
+            background: "white", // optional, prevents overlap with content
+            zIndex: 999, // ensure it stays on top
+          }}
         >
-          <Input
-            value={chatMessageValue}
-            onChange={(value) => {
-              setChatMessageValue(value.target.value);
-            }}
-            placeholder="Chat met chatbot Lars!"
-            className="Chatinput"
-          />
-          <Button type="primary" onClick={sendMessage}>
-            <SendOutlined />
-          </Button>
-        </Space.Compact>
+          <Space.Compact
+            style={{ maxWidth: "40vw", width: "100%", justifySelf: "end" }}
+          >
+            <Input
+              value={chatMessageValue}
+              onChange={(value) => {
+                setChatMessageValue(value.target.value);
+              }}
+              placeholder="Chat met chatbot Lars!"
+              className="Chatinput"
+            />
+            <Button type="primary" onClick={sendMessage}>
+              <SendOutlined />
+            </Button>
+          </Space.Compact>
+        </div>
       </div>
     </>
   );

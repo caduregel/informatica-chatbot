@@ -30,7 +30,7 @@ function ChatMessages({
 
   console.log(combinedMessages);
   return (
-    <>
+    <div className="messages-container">
       {combinedMessages.map((msg, index) => (
         <div
           key={index}
@@ -39,7 +39,7 @@ function ChatMessages({
           {msg.text}
         </div>
       ))}
-    </>
+    </div>
   );
 }
 
@@ -79,6 +79,7 @@ function App() {
         <Space.Compact
           style={{
             height: "100%",
+            marginBottom: "50px",
             maxWidth: "38vw",
             width: "100%",
             display: "flex",

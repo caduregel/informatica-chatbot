@@ -159,6 +159,7 @@ function App() {
               onChange={(value) => {
                 setChatMessageValue(value.target.value);
               }}
+              onPressEnter={sendMessage}
               placeholder="Chat met chatbot Lars!"
               className="Chatinput"
             />

@@ -3,6 +3,7 @@ import "./App.css";
 import { Button, Input, Space } from "antd";
 import { SendOutlined } from "@ant-design/icons";
 import lars from "./assets/lars.png";
+import { GoogleGenAI } from "@google/genai";
 
 interface IMessage {
   sender: "user" | "bot";
@@ -28,7 +29,7 @@ function ChatMessages({
     }
   }
 
-  console.log(combinedMessages);
+  // console.log(combinedMessages);
   return (
     <div className="messages-container">
       {combinedMessages.map((msg, index) => (
@@ -47,22 +48,68 @@ function App() {
   const [chatMessageValue, setChatMessageValue] = useState<string>("");
   const [chatbotLoading, setChatbotLoading] = useState<boolean>(false);
   const [userMessages, setUserMessages] = useState<string[]>([]);
+  const [hasProvidedSecret, setHasProvidedSecret] = useState<boolean>(false);
 
   const [chatbotMessages, setChatbotMessages] = useState<string[]>([
-    "Hallo! Ik ben Lars, jouw persoonlijke chatbot. Waar kan ik je mee helpen",
+    "Hallo! Ik ben Lars, voordat je van mij gebruik kan maken moet je mij de geheime code vertellen",
   ]);
 
-  const sendMessage = () => {
+  const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
+
+  const sendMessage = async () => {
+    // check if user has provided secret key
+    if (!hasProvidedSecret) {
+      if (chatMessageValue === import.meta.env.VITE_SECRET_KEY) {
+        setHasProvidedSecret(true);
+        const userMessagesCopy = [...userMessages];
+        userMessagesCopy.push(chatMessageValue);
+        setUserMessages(userMessagesCopy);
+        const chatbotMessagesCopy = [...chatbotMessages];
+        chatbotMessagesCopy.push(
+          "Bedankt! Je kunt nu met mij chatten. Waar wil je het over hebben?"
+        );
+        setChatbotMessages(chatbotMessagesCopy);
+      } else {
+        const userMessagesCopy = [...userMessages];
+        userMessagesCopy.push(chatMessageValue);
+        setUserMessages(userMessagesCopy);
+
+        const chatbotMessagesCopy = [...chatbotMessages];
+        chatbotMessagesCopy.push("Onjuiste geheime code. Probeer het opnieuw.");
+        setChatbotMessages(chatbotMessagesCopy);
+      }
+      setChatMessageValue("");
+      return;
+    }
+
     // if bot loading, do nothing
     if (chatbotLoading) return;
     setChatbotLoading(true);
+
     // alter user messages array
     const userMessagesCopy = [...userMessages];
     userMessagesCopy.push(chatMessageValue);
     setUserMessages(userMessagesCopy);
 
     const chatbotMessagesCopy = [...chatbotMessages];
-    chatbotMessagesCopy.push("Fuck jou");
+    chatbotMessagesCopy.push("Aan het laden..."); // placeholder while loading
+    setChatbotMessages(chatbotMessagesCopy);
+
+    const promptText =
+      "To the following question, " +
+      "Be very direct, answer very angrily, always insult the person asking the question" +
+      "Answer in plain text only, no markdown, keep your answer under 50 words, speak dutch, your name is Lars. Question: ";
+
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: promptText + chatMessageValue,
+    });
+
+    // remove placeholder
+    chatbotMessagesCopy.pop();
+    chatbotMessagesCopy.push(
+      response.text ? response.text : "Ik weet het niet."
+    );
     setChatbotMessages(chatbotMessagesCopy);
 
     setChatMessageValue("");

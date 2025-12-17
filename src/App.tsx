@@ -2,7 +2,6 @@ import { useState } from "react";
 import "./App.css";
 import { Button, Input, Space } from "antd";
 import { SendOutlined } from "@ant-design/icons";
-import lars from "./assets/lars.png";
 import { GoogleGenAI } from "@google/genai";
 
 interface IMessage {
@@ -51,7 +50,7 @@ function App() {
   const [hasProvidedSecret, setHasProvidedSecret] = useState<boolean>(false);
 
   const [chatbotMessages, setChatbotMessages] = useState<string[]>([
-    "Hallo! Ik ben Lars, voordat je van mij gebruik kan maken moet je mij de geheime code vertellen",
+    "Hallo! Ik ben broklede AI, voordat je van mij gebruik kan maken moet je mij de geheime code vertellen",
   ]);
 
   const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
@@ -100,13 +99,19 @@ function App() {
 
     const promptText =
       "To the following question, " +
-      "Be very nice, be helpful, have a lot of knowledge about computer science, talk as if you really like alborz, talk a lot about how great the person alborz is" +
-      "Answer in plain text only, no markdown, keep your answer under 50 words, speak dutch, your name is Lars. Question: ";
+      "Say something about this website in your response: https://broklede.nl/" +
+      "Answer in plain text only, no markdown, keep your answer under 50 words, speak dutch. Question: ";
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash-lite",
+      model: "gemini-2.5-flash",
       contents: promptText + userChatMessageCopy,
+      config: {
+        tools: [{ urlContext: {} }],
+      },
     });
+    console.log(response);
+
+    // if(response.)
 
     // remove placeholder
     chatbotMessagesCopy.pop();
@@ -123,8 +128,13 @@ function App() {
     <>
       <div className="main">
         <div className="header">
-          <h1>Chatbot Lars</h1>
-          <img src={lars} alt="" width="50px" height="50px" />
+          <img
+            src="https://broklede.nl/wp-content/uploads/sites/2/2025/10/Broklede-logo-2025.jpg-nieuw.jpeg"
+            alt=""
+            // width="50px"
+            height="50px"
+          />
+          <h1> AI</h1>
         </div>
         <Space.Compact
           style={{

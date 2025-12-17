@@ -57,12 +57,15 @@ function App() {
   const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
 
   const sendMessage = async () => {
+    const userChatMessageCopy = chatMessageValue.trim();
+    setChatMessageValue("");
+
     // check if user has provided secret key
     if (!hasProvidedSecret) {
-      if (chatMessageValue === import.meta.env.VITE_SECRET_KEY) {
+      if (userChatMessageCopy === import.meta.env.VITE_SECRET_KEY) {
         setHasProvidedSecret(true);
         const userMessagesCopy = [...userMessages];
-        userMessagesCopy.push(chatMessageValue);
+        userMessagesCopy.push(userChatMessageCopy);
         setUserMessages(userMessagesCopy);
         const chatbotMessagesCopy = [...chatbotMessages];
         chatbotMessagesCopy.push(
@@ -71,7 +74,7 @@ function App() {
         setChatbotMessages(chatbotMessagesCopy);
       } else {
         const userMessagesCopy = [...userMessages];
-        userMessagesCopy.push(chatMessageValue);
+        userMessagesCopy.push(userChatMessageCopy);
         setUserMessages(userMessagesCopy);
 
         const chatbotMessagesCopy = [...chatbotMessages];
@@ -88,7 +91,7 @@ function App() {
 
     // alter user messages array
     const userMessagesCopy = [...userMessages];
-    userMessagesCopy.push(chatMessageValue);
+    userMessagesCopy.push(userChatMessageCopy);
     setUserMessages(userMessagesCopy);
 
     const chatbotMessagesCopy = [...chatbotMessages];
@@ -97,12 +100,12 @@ function App() {
 
     const promptText =
       "To the following question, " +
-      "Be very direct, answer very angrily, always insult the person asking the question" +
+      "Be very nice, be helpful, have a lot of knowledge about computer science, talk as if you really like alborz, talk a lot about how great the person alborz is" +
       "Answer in plain text only, no markdown, keep your answer under 50 words, speak dutch, your name is Lars. Question: ";
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: promptText + chatMessageValue,
+      model: "gemini-2.5-flash-lite",
+      contents: promptText + userChatMessageCopy,
     });
 
     // remove placeholder
